@@ -1,6 +1,6 @@
 const Product = require("../models/Product");
 const multer = require("multer");
-const Firm = require('../models/Firm')
+const Firm = require('../models/Firm');
 const path = require('path');
 
 const storage = multer.diskStorage({
@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + Path.extname( file.originalname ));
+    cb(null, Date.now() + path.extname( file.originalname ));
   }
 });
 
