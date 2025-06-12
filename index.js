@@ -31,5 +31,5 @@ app.listen(PORT, () => {
 });
 
 app.use('/', (req,res) => {
-    res.send();
+    res.send("Welcome to the Swiggy Suby Backend API");
 })
