@@ -19,14 +19,15 @@ const addFirm = async (req, res) => {
     const { firmName, area, category, region, offer } = req.body;
     const image = req.file ? req.file.filename : undefined;
 
-    // ✅ Get the vendor
     const vendor = await Vendor.findById(req.vendorId); 
-
     if (!vendor) {
       return res.status(404).json({ message: "Vendor not found" });
     }
 
-    // ✅ Create the firm
+    if (vendor.firm.length > 0) {
+      return res.status(400).json({ message: "vendor can have only one firm" });
+    }
+
     const firm = new Firm({
       firmName,
       area,
@@ -38,14 +39,15 @@ const addFirm = async (req, res) => {
     });
 
     const savedFirm = await firm.save();
+    vendor.firm.push(savedFirm);
+    await vendor.save();
 
-    vendor.firm.push(savedFirm)
-
-    await vendor.save()
-
-    return res.status(200).json({ message: "Firm Added Successfully" });
+    return res.status(200).json({ message: "Firm Added Successfully", firmId: savedFirm._id });
 
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Firm name already exists" });
+    }
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
